@@ -1,3 +1,4 @@
+//particle animation from Simple Particle System by Daniel Shiffman
 // uwnd stores the 'u' component of the wind.
 // The 'u' component is the east-west component of the wind.
 // Positive values indicate eastward wind, and negative
@@ -18,6 +19,8 @@ Table vwnd;
 // 135W to 65W, and from 55N to 25N
 PImage img;
 ParticleSystem ps;
+ParticleSystem ps1;
+
 
 
 void setup() {
@@ -26,6 +29,8 @@ void setup() {
   size(700, 400, P3D);
   pixelDensity(displayDensity());
   ps = new ParticleSystem(new PVector(random(0,width), random(0,height)));
+
+
   
   img = loadImage("background.png");
   uwnd = loadTable("uwnd.csv");
@@ -40,6 +45,7 @@ void draw() {
   
   ps.addParticle();
   ps.run();
+
   drawMouseLine();
 
 }
@@ -155,18 +161,19 @@ class Particle {
   float a = position.x * uwnd.getColumnCount() / width;
   float b = position.y * uwnd.getRowCount() / height;
   
-  float dx = readInterp(uwnd, a, b) * 10;
-  float dy = -readInterp(vwnd, a, b) * 10;
+  float dx = readInterp(uwnd, a, b);
+  float dy = -readInterp(vwnd, a, b);
     
     //acceleration = new PVector(0, 0.05);
     //velocity = new PVector(random(1, -1), random(-2, 1));
-    acceleration = new PVector(dx/10, dy/10);
-    velocity = getVelocity();
-    lifespan = 250.0;
+    acceleration = new PVector(0, 0.05);
+    velocity = new PVector(random(dx,dx+0.01), random(dy+0.01));
+    
+    lifespan = random(100.0,300.0);
   }
   
 PVector getVelocity(){
-   velocity = new PVector(random(1, -1), random(-2, 1));
+   
    return velocity;
 
 }
@@ -181,10 +188,22 @@ void run() {
   
     // Method to update position
   void update() {
+    
+    
+  float a = position.x * uwnd.getColumnCount() / width;
+  float b = position.y * uwnd.getRowCount() / height;
+  
+  float dx = readInterp(uwnd, a, b);
+  float dy = -readInterp(vwnd, a, b);
+    
+    //acceleration = new PVector(0, 0.05);
+    //velocity = new PVector(random(1, -1), random(-2, 1));
+    acceleration = new PVector(0, 0.5);
+    velocity = new PVector(random(dx,dx+0.01), random(dy,dy+0.01));
 
    position.add(velocity);
-   velocity.add(acceleration);
-   lifespan -= 1.0;
+   //velocity.add(acceleration);
+   lifespan = lifespan -1;
   }
 
   // Method to display
