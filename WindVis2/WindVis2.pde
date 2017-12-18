@@ -148,13 +148,14 @@ class ParticleSystem {
     }
   }
 }
+
+  
   
 class Particle {
   PVector position;
   PVector velocity;
   PVector acceleration;
   float lifespan;
-  float time = 10;
 
   Particle(PVector l) {
     position = l.copy();
@@ -167,33 +168,54 @@ PVector getVelocity(){
    return velocity;
 
 }
+  
+  // A class to describe a group of Particles
+// An ArrayList is used to manage the list of Particles 
 
 void run() {
     update();
     display();
   }
-
-void update() {
-       
+  
+    // Method to update position
+  void update() {
+    
+    //v += rk4(x, dt) * dt; // rk4() instead of getMagintude()
+    //x += v * dt;
+    //time += dt;
+    
+    
   float a = position.x * uwnd.getColumnCount() / width;
   float b = position.y * uwnd.getRowCount() / height;
   
   float dx = readInterp(uwnd, a, b);
   float dy = -readInterp(vwnd, a, b);
- 
-   velocity = new PVector(dx, dy);
+    
+    //acceleration = new PVector(0, 0.05);
+    //acceleration = new PVector(0.05, 0.05);
+    velocity = new PVector(random(dx, dx + 0.6), random(dy, dy+0.6));
 
+   //velocity.add(acceleration);
    position.add(velocity);
-   lifespan = lifespan -1;
+   lifespan = lifespan -60;
   }
 
-void display() {
+  // Method to display
+  void display() {
+    //stroke(0, lifespan);
+    beginShape();
+    vertex(30, 20);
+    vertex(85, 20);
+    vertex(85, 75);
+    vertex(30, 75);
+    endShape(CLOSE);
     fill(0, lifespan);
     ellipse(position.x, position.y, 8, 8);
   }
 
 
-boolean isDead() {
+  // Is the particle still useful?
+  boolean isDead() {
     if (lifespan < 0.0) {
       return true;
     } else {
