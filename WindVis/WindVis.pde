@@ -154,7 +154,7 @@ class Particle {
   PVector velocity;
   PVector acceleration;
   float lifespan;
-  float time = 10;
+  float dt = 0.5;
 
   Particle(PVector l) {
     position = l.copy();
@@ -180,6 +180,7 @@ void update() {
   
   float dx = readInterp(uwnd, a, b);
   float dy = -readInterp(vwnd, a, b);
+  
  
    velocity = new PVector(dx, dy);
 
@@ -189,7 +190,10 @@ void update() {
 
 void display() {
     fill(0, lifespan);
-    ellipse(position.x, position.y, 8, 8);
+    strokeWeight(10);
+    beginShape(POINTS);
+    vertex(position.x, position.y);
+    endShape();
   }
 
 
