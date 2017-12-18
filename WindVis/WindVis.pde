@@ -28,10 +28,9 @@ void setup() {
   // parameter.  On many computers, having P3D should make it run faster
   size(700, 400, P3D);
   pixelDensity(displayDensity());
-  for (int i = 0; i < 10; i++)
- {
-     ps = new ParticleSystem(new PVector(random(0,width), random(0,height)));
- }
+  
+  ps = new ParticleSystem(new PVector(random(0,width), random(0,height)));
+ 
 
 
   
@@ -77,6 +76,8 @@ void drawMouseLine() {
   float dx = readInterp(uwnd, a, b) * 10;
   float dy = -readInterp(vwnd, a, b) * 10;
   fill(0);
+  strokeWeight(1);
+  stroke(0);
   line(mouseX, mouseY, mouseX + dx, mouseY + dy);
 }
 
@@ -154,7 +155,7 @@ class Particle {
   PVector velocity;
   PVector acceleration;
   float lifespan;
-  float dt = 0.5;
+  float dt = 0.1;
 
   Particle(PVector l) {
     position = l.copy();
@@ -181,18 +182,39 @@ void update() {
   float dx = readInterp(uwnd, a, b);
   float dy = -readInterp(vwnd, a, b);
   
+  //float a1 = position.x + (dx*dt);
+  //float b1 = position.y + (dy*dt);
  
-   velocity = new PVector(dx, dy);
+  // velocity = new PVector(a1, b1);
 
-   position.add(velocity);
+   PVector velocity1 = position.add(dx*dt/2, dy*dt/2);
+   float rkpositionx = velocity1.x;
+   float rkpositiony = velocity1.y;
+   
+  float a1 = rkpositionx * uwnd.getColumnCount() / width;
+  float b1 = rkpositiony * uwnd.getRowCount() / height;
+  
+  float dx1 = readInterp(uwnd, a1, b1);
+  float dy1 = -readInterp(vwnd, a1, b1);
+  
+  position.add(dx1*dt/2, dy1*dt/2);
+   
+   
+   
+
    lifespan = lifespan -1;
   }
 
 void display() {
     fill(0, lifespan);
-    strokeWeight(10);
+    strokeWeight(1);
+    //stroke(0, lifespan);
+    //print(-(lifespan*10));
     beginShape(POINTS);
-    vertex(position.x, position.y);
+    line(position.x, position.y, position.x + 5, position.y + 5);
+
+    //vertex(position.x, position.y);
+    
     endShape();
   }
 
