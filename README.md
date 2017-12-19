@@ -17,7 +17,7 @@ randomly generated between 50 and 250
 
 <b>A discussion of how changing the step size for the integration affects the results:</b>
 
-For this we tested with various step sizes, ranging from dt = 0.1 to dt = 0.9, and compared with the bilinear interpolation line we drew during the simulation on random points. Increasing the step size noticeably changed the accuracy of movement of wind, and generally there was a tendency for it to move 'outwards' or in a wider spiral formation. Smaller step sizes progressively fixed this issue and alligned much better with the interpolation line.
+For this we tested with various step sizes, ranging from dt = 0.1 to dt = 0.4, and compared with the bilinear interpolation line we drew during the simulation on random points. Increasing the step size noticeably changed the accuracy of movement of wind, and generally there was a tendency for it to move 'outwards' or in a wider spiral formation. The particles or lines also appeared more erratic than smooth and continuous. Smaller step sizes progressively fixed this issue and alligned much better with the original euler interpolation line.
 
 <b>A description of any wizardly work you did beyond the original scope of the assignment:</b>
   
