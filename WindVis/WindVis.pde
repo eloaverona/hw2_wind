@@ -214,7 +214,7 @@ void display() {
     float color1 = position.mag();
     stroke(int((color1*10)-(life)), int((color1*0.3)), 0, life);
     strokeWeight(3);
-    line(position.x, position.y,v3.x, v3.y);
+    line(v3.x, v3.y,position.x, position.y);
   }
 
 
