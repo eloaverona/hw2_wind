@@ -19,8 +19,6 @@ Table vwnd;
 // 135W to 65W, and from 55N to 25N
 PImage img;
 ParticleSystem ps;
-ParticleSystem ps1;
-
 
 
 void setup() {
@@ -29,10 +27,10 @@ void setup() {
   size(700, 400, P3D);
   pixelDensity(displayDensity());
   
-  ps = new ParticleSystem(new PVector(random(0,width), random(0,height)));
- 
-
-
+  ps = new ParticleSystem();
+  for (int i = 0; i < 2000; i++) {
+    ps.addParticle();
+  }
   
   img = loadImage("background.png");
   uwnd = loadTable("uwnd.csv");
@@ -45,7 +43,8 @@ void draw() {
   image(img, 0, 0, width, height);
   //drawpoints();
   
-  ps.addParticle();
+  
+  
   ps.run();
 
   drawMouseLine();
@@ -130,21 +129,22 @@ class ParticleSystem {
   ArrayList<Particle> particles;
   PVector origin;
 
-  ParticleSystem(PVector position) {
-    origin = position.copy();
+  ParticleSystem() {
     particles = new ArrayList<Particle>();
   }
 
   void addParticle() {
-    particles.add(new Particle(origin));
+    particles.add(new Particle(new PVector(random(0,width), random(0,height))));
   }
 
   void run() {
     for (int i = particles.size()-1; i >= 0; i--) {
+     
       Particle p = particles.get(i);
       p.run();
       if (p.isDead()) {
         particles.remove(i);
+        particles.add(new Particle(new PVector(random(0,width), random(0,height))));
       }
     }
   }
@@ -154,13 +154,21 @@ class Particle {
   PVector position;
   PVector velocity;
   PVector acceleration;
-  float lifespan;
+  float life;
   float dt = 0.1;
+  PVector velocity2;
+  PVector v2;
+  PVector v3;
+  float lifeInit;
+
+  
 
   Particle(PVector l) {
     position = l.copy();
 
-    lifespan = 300;
+    life = random(50,250);
+    lifeInit = life;
+
   }
   
 PVector getVelocity(){
@@ -175,19 +183,15 @@ void run() {
   }
 
 void update() {
-       
+
+
   float a = position.x * uwnd.getColumnCount() / width;
   float b = position.y * uwnd.getRowCount() / height;
   
   float dx = readInterp(uwnd, a, b);
   float dy = -readInterp(vwnd, a, b);
-  
-  //float a1 = position.x + (dx*dt);
-  //float b1 = position.y + (dy*dt);
- 
-  // velocity = new PVector(a1, b1);
+  PVector velocity1 = position.add(dx*dt/2, dy*dt/2);
 
-   PVector velocity1 = position.add(dx*dt/2, dy*dt/2);
    float rkpositionx = velocity1.x;
    float rkpositiony = velocity1.y;
    
@@ -197,30 +201,25 @@ void update() {
   float dx1 = readInterp(uwnd, a1, b1);
   float dy1 = -readInterp(vwnd, a1, b1);
   
+  
   position.add(dx1*dt/2, dy1*dt/2);
-   
-   
-   
-
-   lifespan = lifespan -1;
+  v2 = position.copy();
+  v3 = v2.add(18*dx1*dt, 18*dy1*dt);
+  
+  life = life -1;
   }
 
 void display() {
-    fill(0, lifespan);
-    strokeWeight(1);
-    //stroke(0, lifespan);
-    //print(-(lifespan*10));
-    beginShape(POINTS);
-    line(position.x, position.y, position.x + 5, position.y + 5);
-
-    //vertex(position.x, position.y);
-    
-    endShape();
+    //function for changing colors
+    float color1 = position.mag();
+    stroke(int((color1*10)-(life)), int((color1*0.3)), 0, life);
+    strokeWeight(3);
+    line(position.x, position.y,v3.x, v3.y);
   }
 
 
 boolean isDead() {
-    if (lifespan < 0.0) {
+    if (life < 0.0) {
       return true;
     } else {
       return false;
